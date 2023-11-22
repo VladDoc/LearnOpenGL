@@ -5,7 +5,12 @@ project (LearnOpenGL)
 set (CMAKE_CXX_STANDARD 20)
 
 find_package(OpenGL REQUIRED)
-find_package(glew REQUIRED)
+
+IF (WIN32)
+	find_package(glew REQUIRED)
+ELSE()
+	find_package(GLEW REQUIRED)
+ENDIF()
 
 add_subdirectory(lib/glm)
 set(GLM_INCLUDE_DIR "lib/glm")
@@ -34,6 +39,11 @@ file(GLOB MAIN_SOURCE_FILES
 	src/*.cpp
 )
 
+
+string (REPLACE ";" "\n" MAIN_SOURCE_FILES_STR "${MAIN_SOURCE_FILES}")
+
+message("SOURCES: \n${MAIN_SOURCE_FILES_STR}")
+
 include_directories(
 	${GLEW_INCLUDE_PATH}
 	${GLM_INCLUDE_DIR}
@@ -59,14 +69,16 @@ file(GLOB SHADER_SOURCES
 	shaders/*.glsl
 )
 
-file(COPY ${SHADER_SOURCES} DESTINATION ${CMAKE_BINARY_DIR})
+target_compile_definitions(LearnOpenGL PUBLIC MAIN_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/")
+
+#file(COPY ${SHADER_SOURCES} DESTINATION ${CMAKE_BINARY_DIR}/shaders/)
 
 #FOREACH(MY_RESOURCE_FILE ${SHADER_SOURCES})
 #    add_custom_command(
 #        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${MY_RESOURCE_FILE}
 #        COMMAND ${CMAKE_COMMAND} -E copy
 #            ${CMAKE_CURRENT_SOURCE_DIR}/${MY_RESOURCE_FILE}
-#            ${CMAKE_CURRENT_BINARY_DIR}/${MY_RESOURCE_FILE}
+#            ${CMAKE_CURRENT_BINARY_DIR}/shaders/${MY_RESOURCE_FILE}
 #        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${MY_RESOURCE_FILE}
 #  )
 #ENDFOREACH()

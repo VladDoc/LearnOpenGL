@@ -1,39 +1,35 @@
 #version 330 core
 
-out vec4 FragColor;  
+out vec4 FragColor;
+  
 in vec3 ourColor;
+in vec2 TexCoord;
 
+uniform sampler2D ourTexture;
 uniform float time;
 
-vec2 rotateUV(vec2 uv, float rotation)
+vec2 RotateUV(in vec2 uv, in float delta)
 {
-    float mid = 0.5;
     return vec2(
-        cos(rotation) * (uv.x - mid) + sin(rotation) * (uv.y - mid) + mid,
-        cos(rotation) * (uv.y - mid) - sin(rotation) * (uv.x - mid) + mid
+        uv.x*cos(delta) - uv.y*sin(delta),
+        uv.y*cos(delta) + uv.x*sin(delta)
     );
 }
 
-vec2 rotateUV(vec2 uv, float rotation, vec2 mid)
+float ChangeScale(in float value, in vec2 oldScale, in vec2 newScale)
 {
-    return vec2(
-      cos(rotation) * (uv.x - mid.x) + sin(rotation) * (uv.y - mid.y) + mid.x,
-      cos(rotation) * (uv.y - mid.y) - sin(rotation) * (uv.x - mid.x) + mid.y
-    );
+    return ((value - oldScale.x) / (oldScale.y - oldScale.x)) * (newScale.y - newScale.x) + newScale.x;
 }
-
-vec2 rotateUV(vec2 uv, float rotation, float mid)
-{
-    return vec2(
-      cos(rotation) * (uv.x - mid) + sin(rotation) * (uv.y - mid) + mid,
-      cos(rotation) * (uv.y - mid) - sin(rotation) * (uv.x - mid) + mid
-    );
-}
-
   
 void main()
 {
-    //vec2 uv = rotateUV(gl_FragCoord.xy, time);
+    const vec2 sinRange = vec2(-1, 1);
+    const vec2 uvRange = vec2(0, 1); 
+    vec3 uv = vec3(ChangeScale( sin(time), sinRange, uvRange), 
+                   ChangeScale( cos(time), sinRange, uvRange),
+                   ChangeScale(-sin(time), sinRange, uvRange));
+    
+    //FragColor = vec4(normalize(ourColor * uv), 1);
 
-    FragColor = vec4(ourColor, 1.0);
+    FragColor = texture(ourTexture, TexCoord) * vec4(normalize(ourColor * uv), 1);
 }

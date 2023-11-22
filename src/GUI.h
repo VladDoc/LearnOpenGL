@@ -19,3 +19,7 @@ struct ImGUI {
     static ImVec4 clear_color;
     static ImGuiIO* io;
 };
+
+struct ImGUIable {
+    virtual void ImGUIFlex() = 0;
+};
