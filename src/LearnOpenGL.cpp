@@ -5,7 +5,7 @@
 #include "GUI.h"
 #include "Shader.h"
 
-#include "Triangle.h"
+#include "Mesh.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -18,13 +18,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 
-void processInput(GLFWwindow* window, Triangle& tri)
+void processInput(GLFWwindow* window, Mesh& mesh)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_F3) == GLFW_PRESS)
-        tri.InitShaders();
+        mesh.Init();
 }
 
 
@@ -57,38 +57,43 @@ int main(int, char**)
         return -1;
     }
 
+    bool swapInterval = true;
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSwapInterval(0); // Enable vsync
+    glfwSwapInterval(swapInterval); // Enable vsync
 
     ImGUI::Init(glsl_version, window);
 
-    Triangle triangle;
-    triangle.Init();
+    Mesh mesh;
+    mesh.Init();
 
-    //Triangle triangle2;
-    //triangle2.Init();
+    //mesh mesh2;
+    //mesh2.Init();
    
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
-        processInput(window, triangle);
+        processInput(window, mesh);
 
         ImGUI::ClearFrame();
         ImGUI::NewFrame();
 
 
-        triangle.Draw();
-        //triangle2.Draw();
+        mesh.Draw();
+        //mesh2.Draw();
 
         // imgui window
         {
             ImGui::Begin("Config");
             ImGui::ColorEdit3("clear color", (float*)&ImGUI::clear_color); // Edit 3 floats representing a color
 
-            triangle.ImGUIFlex();
-            //triangle2.ImGUIFlex();
+            mesh.ImGUIFlex();
+            //mesh2.ImGUIFlex();
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGUI::io->Framerate, ImGUI::io->Framerate);
+
+            if (ImGui::Checkbox("V-Sync", &swapInterval)) {
+                glfwSwapInterval(swapInterval);
+            }
             ImGui::End();
         }
 

@@ -2,11 +2,11 @@
 #include "Shader.h"
 #include "Texture.h"
 
-struct Triangle : ImGUIable
+struct Mesh : ImGUIable
 {
     // floats per vertex
     inline static const size_t stride = 8;
-    // Regular ass triangle
+    // Regular rectangle
     float vertices[32] = {
         // positions          // colors           // texture coords
          0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
@@ -31,10 +31,15 @@ struct Triangle : ImGUIable
     */
     unsigned int VBO = 0;
     unsigned int VAO = 0;
+    unsigned int EBO = 0;
 
     Shader shader;
 
-    Texture texture;
+    Texture texture1;
+    Texture texture2;
+
+    float blendingFactor = 0.5;
+    bool applyColor = true;
 
     void ImGUIFlex() override;
 
