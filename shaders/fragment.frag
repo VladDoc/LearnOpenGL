@@ -39,7 +39,7 @@ void main()
     //FragColor = texture(ourTexture, TexCoord) * vec4(normalize(ourColor * uv), 1);
 
     vec4 texel1 = texture(texture0, TexCoord);
-    vec4 texel2 = texture(texture1, vec2(-TexCoord.x, TexCoord.y));
+    vec4 texel2 = texture(texture1, vec2(TexCoord.x, TexCoord.y));
     vec4 finalTexel = mix(texel1, texel2, blendingFactor);
     
     if(applyColor) {

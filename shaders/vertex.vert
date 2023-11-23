@@ -7,6 +7,8 @@ out vec3 ourColor;
 out vec2 TexCoord;
 
 uniform float time;
+uniform bool rotate;
+
 
 vec2 RotateUV(in vec2 uv, in float delta)
 {
@@ -18,7 +20,7 @@ vec2 RotateUV(in vec2 uv, in float delta)
 
 void main()
 {
-    vec2 uv = RotateUV(aPos.xy, time);
+    vec2 uv = rotate ? RotateUV(aPos.xy, time) : aPos.xy;
 
     gl_Position = vec4(uv, aPos.z, 1.0);
     ourColor = aColor;

@@ -33,6 +33,8 @@ void Mesh::ImGUIFlex()
     ImGui::Separator();
     ImGui::Checkbox("Apply Color", &applyColor);
     ImGui::SameLine();
+    ImGui::Checkbox("Rotate", &rotate);
+    ImGui::SameLine();
     ImGui::PushItemWidth(150);
     ImGui::SliderFloat("Blending Factor", &blendingFactor, -1, 1);
     ImGui::PopItemWidth();
@@ -55,7 +57,6 @@ void Mesh::InitTextures()
     texture1.Init(texture1Path);
 
     texture2.textureIndex = GL_TEXTURE1;
-    texture2.format = GL_RGBA;
     texture2.Init(texture2Path);
 }
 
@@ -95,6 +96,7 @@ void Mesh::Draw()
     shader.SetFloat("time", glfwGetTime());
     shader.SetFloat("blendingFactor", blendingFactor);
     shader.SetBool("applyColor", applyColor);
+    shader.SetBool("rotate", rotate);
 
     texture1.Bind();
     texture2.Bind();

@@ -40,6 +40,7 @@ struct Mesh : ImGUIable
 
     float blendingFactor = 0.5;
     bool applyColor = true;
+    bool rotate = false;
 
     void ImGUIFlex() override;
 
