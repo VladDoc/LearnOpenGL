@@ -7,7 +7,7 @@
 
 bool     ImGUI::show_demo_window    = true;
 bool     ImGUI::show_another_window = false;
-ImVec4   ImGUI::clear_color         = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+ImVec4   ImGUI::clear_color         = ImVec4(0, 26.0f / 256.0f, 52.0f / 256.0f, 1.00f);
 ImGuiIO* ImGUI::io                  = nullptr;
 
 

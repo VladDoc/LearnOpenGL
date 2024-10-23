@@ -31,10 +31,36 @@
 *.out
 *.app
 
-# Cmake Cache
+# lib folder
+/lib/
+
+# Cmake Cache/files
 **/out/**
 !**/out/build/
+**/build/
+**/CMakeLists.txt.user
+**/CMakeCache.txt
+**/CMakeFiles
+**/CMakeScripts
+**/Testing
+**/Makefile
+**/cmake_install.cmake
+**/install_manifest.txt
+**/compile_commands.json
+**/CTestTestfile.cmake
+**/_deps
+**/CMakeUserPresets.json
+**/CMakeDirectoryInformation.cmake 
+
+# Clangd Cache
+**/.cache/**
+
+# Kdevelop cache
+**/.kdev/**
+*.kdev4
 
 # VS files
 /.vs*
 !vs
+
+CMakeSettings.json

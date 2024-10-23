@@ -41,9 +41,6 @@ void Mesh::ImGUIFlex()
 
     ImGui::InputText("Texture1", texture1Path, sizeof(texture1Path));
     ImGui::InputText("Texture2", texture2Path, sizeof(texture2Path));
-    if (ImGui::Button("Reload Textures and Shaders")) {
-        this->Init();
-    }
 }
 
 void Mesh::InitShaders()

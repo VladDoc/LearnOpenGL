@@ -5,8 +5,27 @@
 
 #include "glad.h"
 
-void Shader::InitWithFiles(const char* vertexPath, const char* fragmentPath)
+#include "DebugPrint.h"
+
+ShaderInfoStorage::FileMap ShaderInfoStorage::shaderfiles;
+
+Shader& Shader::InitWithFiles(const char* vertexPath, const char* fragmentPath, bool reload)
 {
+    ShaderPaths files;
+    if(ID != NullID) {
+        auto it = ShaderInfoStorage::shaderfiles.find(ID);
+        if(it != ShaderInfoStorage::shaderfiles.end() && reload)
+            files = std::move(it->second);
+        else
+            files = {vertexPath, fragmentPath};
+
+        ShaderInfoStorage::shaderfiles.erase(ID);
+    } else {
+        files = {vertexPath, fragmentPath};
+    }
+    vertexPath      = files.vertexFile.c_str();
+    fragmentPath    = files.fragmentFile.c_str();
+
     // 1. retrieve the vertex/fragment source code from filePath
     std::string vertexCode;
     std::string fragmentCode;
@@ -31,17 +50,32 @@ void Shader::InitWithFiles(const char* vertexPath, const char* fragmentPath)
         vertexCode = vShaderStream.str();
         fragmentCode = fShaderStream.str();
     }
-    catch (std::ifstream::failure e)
+    catch (std::ifstream::failure& e)
     {
         std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+    }
+
+    DebugLog() {
+        std::cout << "Compiling: "  << std::endl;
+        std::cout << "\t" << vertexPath     << std::endl;
+        std::cout << "\t" << fragmentPath   << std::endl;
+        std::cout << "\t" << "Old ID: " <<
+            (ID == NullID ? "(NullID)" : std::to_string(ID)) << std::endl;
     }
     const char* vShaderCode = vertexCode.c_str();
     const char* fShaderCode = fragmentCode.c_str();
 
     InitWithStrings(vShaderCode, fShaderCode);
+
+    ShaderInfoStorage::shaderfiles[ID] = std::move(files);
+
+    DebugLog() {
+        std::cout << "\t" << "ID: " << ID << std::endl;
+    }
+    return *this;
 }
 
-void Shader::InitWithStrings(const char* vShaderCode, const char* fShaderCode)
+Shader& Shader::InitWithStrings(const char* vShaderCode, const char* fShaderCode)
 {
     unsigned int vertex, fragment;
     int success;
@@ -71,6 +105,9 @@ void Shader::InitWithStrings(const char* vShaderCode, const char* fShaderCode)
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     };
 
+    // reloading occurs
+    if(ID != Shader::NullID) glDeleteProgram(ID);
+
     ID = glCreateProgram();
     glAttachShader(ID, vertex);
     glAttachShader(ID, fragment);
@@ -86,6 +123,7 @@ void Shader::InitWithStrings(const char* vShaderCode, const char* fShaderCode)
     // delete the shaders as they're linked into our program now and no longer necessary
     glDeleteShader(vertex);
     glDeleteShader(fragment);
+    return *this;
 }
 
 void Shader::Use()

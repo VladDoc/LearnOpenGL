@@ -4,6 +4,21 @@ project (LearnOpenGL)
 
 set (CMAKE_CXX_STANDARD 20)
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Debug)
+endif()
+
+set(SANITIZE false)
+
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+
+if(SANITIZE)
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address,undefined")
+endif()
+
+set(CMAKE_CXX_FLAGS_RELEASE "-Ofast -march=native")
+
 find_package(OpenGL REQUIRED)
 
 IF (WIN32)
@@ -37,6 +52,7 @@ file(GLOB MAIN_HEADER_FILES
 file(GLOB MAIN_SOURCE_FILES
 	src/*.c
 	src/*.cpp
+	PostProc.cpp
 )
 
 
@@ -70,6 +86,7 @@ file(GLOB SHADER_SOURCES
 )
 
 target_compile_definitions(LearnOpenGL PUBLIC MAIN_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/")
+target_compile_definitions(LearnOpenGL PUBLIC YO_MAMA_SO_FAT_DEBUG_LOGS=1)
 
 #file(COPY ${SHADER_SOURCES} DESTINATION ${CMAKE_BINARY_DIR}/shaders/)
 
